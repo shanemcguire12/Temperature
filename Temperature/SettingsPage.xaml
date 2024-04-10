@@ -1,0 +1,27 @@
+<!-- SettingsPage.xaml -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Temperature.SettingsPage"
+             Title="Settings">
+
+    <VerticalStackLayout Padding="30" Spacing="15">
+
+        <Label Text="Add email and phone number for SMS and email alerts:"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <Entry x:Name="emailEntry"
+               Placeholder="Enter email"
+               Text="{Binding ContactInfo.Email, Mode=TwoWay}"
+               Keyboard="Email"/>
+
+        <Entry x:Name="phoneEntry"
+               Placeholder="Enter phone number"
+               Text="{Binding ContactInfo.PhoneNumber, Mode=TwoWay}"
+               Keyboard="Telephone"/>
+
+        <Button Text="Update"
+                Clicked="OnUpdateClicked"/>
+
+    </VerticalStackLayout>
+</ContentPage>

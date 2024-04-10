@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Temperature.HistoricalResultsPage"
+             Title="Historical Results">
+
+    <ScrollView>
+        <StackLayout Padding="20">
+            <!-- ListView for the data -->
+            <ListView ItemsSource="{Binding HistoricalData}" SeparatorVisibility="Default" HasUnevenRows="true">
+                <ListView.Header>
+                    <Grid Padding="5" ColumnDefinitions="100,100,120,100">
+                        <Label Text="Temp" Grid.Column="0" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Text="Humidity" Grid.Column="1" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Text="Timestamp" Grid.Column="2" HorizontalOptions="StartAndExpand" FontAttributes="Bold" FontSize="Medium"/>
+                    </Grid>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Padding="10" ColumnDefinitions="100,100,120,100">
+                                <Label Text="{Binding FormattedTemperature}" Grid.Column="0" HorizontalOptions="Center" FontSize="Medium"/>
+                                <Label Text="{Binding FormattedHumidity}" Grid.Column="1" HorizontalOptions="Center" FontSize="Medium"/>
+                                <Label Text="{Binding FormattedTimestamp}" Grid.Column="2" HorizontalOptions="Start" FontSize="Medium"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="Download as PDF" Clicked="OnDownloadPdfClicked" />
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

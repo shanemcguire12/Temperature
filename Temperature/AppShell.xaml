@@ -1,0 +1,24 @@
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:Temperature"
+       x:Class="Temperature.AppShell">
+
+    <!-- Define your tabs here -->
+    <TabBar>
+        <!-- Dashboard tab -->
+        <ShellContent Title="Dashboard" 
+                      Icon="icon_dashboard.png" 
+                      Route="dashboard" 
+                      ContentTemplate="{DataTemplate views:MainPage}" />
+
+        <!-- Historical Results tab -->
+        <ShellContent Title="Historical Results" 
+                      Icon="icon_history.png" 
+                      Route="historicalResults" 
+                      ContentTemplate="{DataTemplate views:HistoricalResultsPage}" />
+        <ShellContent Title="Settings" 
+              Icon="icon_history.png" 
+              Route="Settings" 
+              ContentTemplate="{DataTemplate views:SettingsPage}" />
+    </TabBar>
+</Shell>

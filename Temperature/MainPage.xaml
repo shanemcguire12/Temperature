@@ -1,0 +1,63 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Temperature.MainPage"
+             x:Name="thisPage">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" 
+            VerticalOptions="Start"
+            
+            HorizontalOptions="FillAndExpand"
+                             Margin="20,20,20,20">
+         
+            <Frame CornerRadius="10" 
+                   BorderColor="Gray" 
+                   Padding="75" 
+                   HorizontalOptions="FillAndExpand" 
+                   VerticalOptions="Start" 
+                HasShadow="True">
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="7-Day Rating:" 
+                           FontSize="Medium" 
+                           VerticalOptions="Center"/>
+                    <Frame BackgroundColor="{Binding FridgeScoreColor}" 
+                           WidthRequest="50" 
+                           HeightRequest="50" 
+                           CornerRadius="5" 
+                           HorizontalOptions="Start">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="FridgeScoreTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </HorizontalStackLayout>
+            </Frame>
+
+        
+            <Frame CornerRadius="10" 
+                   BorderColor="Gray" 
+                   Padding="75" 
+                   HorizontalOptions="FillAndExpand" 
+                   VerticalOptions="Start" 
+                HasShadow="True">
+                <Label Text="{Binding Temperature, StringFormat='Current Temperature: {0} °C'}"
+                       FontSize="Medium"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+
+           
+            <Frame CornerRadius="10" 
+                   BorderColor="Gray" 
+                   Padding="75" 
+                   HorizontalOptions="FillAndExpand" 
+                   VerticalOptions="Start" 
+                HasShadow="True">
+                <Label Text="{Binding Humidity, StringFormat='Current Humidity: {0}%'}"
+                       FontSize="Medium"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

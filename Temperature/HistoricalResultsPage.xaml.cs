@@ -1,4 +1,5 @@
 ﻿using Firebase.Database;
+using Firebase.Database.Query;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using SkiaSharp;
@@ -7,8 +8,17 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 
+
 namespace Temperature
 {
+    public static class DateTimeExtensions
+    {
+        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
+        }
+    }
     public partial class HistoricalResultsPage : ContentPage
     {
         private FirebaseClient _firebaseClient;
@@ -17,6 +27,7 @@ namespace Temperature
         public HistoricalResultsPage()
         {
             InitializeComponent();
+            weekPicker.SelectedIndexChanged += OnWeekSelected;
             HistoricalData = new ObservableCollection<HistoricalDataModel>();
 
             // Initialize FirebaseClient with your Firebase URL
@@ -30,6 +41,7 @@ namespace Temperature
         {
             base.OnAppearing();
 
+            PopulateWeekPicker();
             try
             {
                 await PopulateHistoricalData();
@@ -39,6 +51,74 @@ namespace Temperature
                 await DisplayAlert("Error", "Failed to load historical data: " + ex.Message, "OK");
             }
         }
+        private void PopulateWeekPicker()
+        {
+            weekPicker.Items.Add("All Data");  // Add this to display all historical data
+            for (int i = 0; i < 52; i++)  // Assuming you want to display the last year by weeks
+            {
+                DateTime startOfWeek = DateTime.Now.AddDays(-7 * i).StartOfWeek(DayOfWeek.Monday);
+                weekPicker.Items.Add($"Week of {startOfWeek:dd/MM/yyyy}");
+            }
+        }
+
+
+        private void OnWeekSelected(object sender, EventArgs e)
+        {
+            if (weekPicker.SelectedIndex == 0)  // "All Data" is selected
+            {
+                DisplayAllHistoricalData();
+            }
+            else if (weekPicker.SelectedIndex != -1)
+            {
+                DateTime selectedWeek = DateTime.Now.AddDays(-7 * (weekPicker.SelectedIndex - 1)).StartOfWeek(DayOfWeek.Monday);
+                FilterHistoricalDataByWeek(selectedWeek);
+            }
+        }
+
+        private async Task DisplayAllHistoricalData()
+        {
+            HistoricalData.Clear();
+            var historicalItems = await _firebaseClient
+    .Child("temperature_data/historical")
+    .OnceAsync<HistoricalDataModel>();
+            foreach (var item in historicalItems)  // Assuming allHistoricalData contains all items
+            {
+                HistoricalData.Add(item.Object);
+            }
+        }
+
+        private async Task FilterHistoricalDataByWeek(DateTime startOfWeek)
+        {
+            // Fetch all historical data
+            var allHistoricalItems = await _firebaseClient
+                .Child("temperature_data")
+                .Child("historical")
+                .OnceAsync<HistoricalDataModel>();
+
+            // Clear current data
+            HistoricalData.Clear();
+
+            // Convert to start and end of the week timestamps
+            var startTimestamp = startOfWeek.ToString("ddMMyyyy");
+            var endTimestamp = startOfWeek.AddDays(7).ToString("ddMMyyyy");
+
+            // Filter in-memory
+            foreach (var item in allHistoricalItems)
+            {
+                // Parse the timestamp of each item
+                if (DateTime.TryParseExact(item.Object.Timestamp, "ddMMyyyy_HHmm", null, System.Globalization.DateTimeStyles.None, out DateTime itemDate))
+                {
+                    // If the item's date is within the selected week, add it to the collection
+                    if (itemDate >= startOfWeek && itemDate < startOfWeek.AddDays(7))
+                    {
+                        HistoricalData.Add(item.Object);
+                    }
+                }
+            }
+        }
+
+        // Helper extension method to get the start of the week
+
 
         private async Task PopulateHistoricalData()
         {
@@ -79,20 +159,15 @@ namespace Temperature
                     TextSize = 12,
                     IsAntialias = true,
                 };
-
                 var canvas = document.BeginPage(612, 792); // A4 size paper
-
                 float margin = 20;
                 float x = margin;
                 float y = margin;
                 float lineHeight = 20;
-
                 canvas.DrawText("Temperature", x, y, paint);
                 canvas.DrawText("Humidity", x + 200, y, paint);
                 canvas.DrawText("Timestamp", x + 400, y, paint);
-
                 y += lineHeight;
-
                 foreach (var item in items)
                 {
                     canvas.DrawText(item.FormattedTemperature, x, y, paint);
@@ -107,15 +182,15 @@ namespace Temperature
 
         private string GetAppSpecificDownloadPath(string fileName)
         {
-#if __ANDROID__
-    // This code will only compile for Android.
-    var context = Android.App.Application.Context;
-    var path = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-#else
-            // This code will compile for other platforms.
-            var path = FileSystem.AppDataDirectory;
-#endif
-            return Path.Combine(path ?? string.Empty, fileName);
+            #if __ANDROID__
+                // This code will only compile for Android.
+                var context = Android.App.Application.Context;
+                var path = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+            #else
+                        // This code will compile for other platforms.
+                        var path = FileSystem.AppDataDirectory;
+            #endif
+                        return Path.Combine(path ?? string.Empty, fileName);
         }
 
 

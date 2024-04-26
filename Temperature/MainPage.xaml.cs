@@ -57,7 +57,7 @@ namespace Temperature
             _firebaseClient = new FirebaseClient("https://fridge-database-e362b-default-rtdb.europe-west1.firebasedatabase.app");
             FetchTemperatureData();
 
-            Device.StartTimer(TimeSpan.FromSeconds(1), () => // Refresh every 5 minutes
+            Device.StartTimer(TimeSpan.FromSeconds(5), () => // Refresh every 5 minutes
             {
                 FetchTemperatureData();
                 return true; // Return true to keep the timer running, false to stop
@@ -92,7 +92,7 @@ namespace Temperature
 
 
 
-        // ... existing INotifyPropertyChanged implementation ...
+       
 
         public class TemperatureModel
         {

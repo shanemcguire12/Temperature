@@ -4,17 +4,27 @@
              x:Class="Temperature.HistoricalResultsPage"
              Title="Historical Results">
 
-    <ScrollView>
-        <StackLayout Padding="20">
-            <!-- ListView for the data -->
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="0">
+
+        <!-- Week Picker at the very top -->
+        <Picker Grid.Row="0" 
+                x:Name="weekPicker" 
+                Title="Select Week" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Start" 
+                Margin="20,20,20,0"
+                SelectedIndexChanged="OnWeekSelected"/>
+
+        <!-- Fixed Headers -->
+        <Grid Grid.Row="1" Padding="5" ColumnDefinitions="100,100,120,100">
+            <Label Text="Temp" Grid.Column="0" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" FontSize="Medium"/>
+            <Label Text="Humidity" Grid.Column="1" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" FontSize="Medium"/>
+            <Label Text="Timestamp" Grid.Column="2" HorizontalOptions="StartAndExpand" FontAttributes="Bold" FontSize="Medium"/>
+        </Grid>
+
+        <!-- ScrollView for the scrollable list content -->
+        <ScrollView Grid.Row="2" Padding="20">
             <ListView ItemsSource="{Binding HistoricalData}" SeparatorVisibility="Default" HasUnevenRows="true">
-                <ListView.Header>
-                    <Grid Padding="5" ColumnDefinitions="100,100,120,100">
-                        <Label Text="Temp" Grid.Column="0" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" FontSize="Medium"/>
-                        <Label Text="Humidity" Grid.Column="1" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" FontSize="Medium"/>
-                        <Label Text="Timestamp" Grid.Column="2" HorizontalOptions="StartAndExpand" FontAttributes="Bold" FontSize="Medium"/>
-                    </Grid>
-                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -27,8 +37,11 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button Text="Download as PDF" Clicked="OnDownloadPdfClicked" />
-        </StackLayout>
-    </ScrollView>
+        </ScrollView>
+
+        <!-- Download as PDF Button -->
+        <Button Grid.Row="3" Text="Download as PDF" Clicked="OnDownloadPdfClicked" HorizontalOptions="Center" Margin="20"/>
+
+    </Grid>
 
 </ContentPage>

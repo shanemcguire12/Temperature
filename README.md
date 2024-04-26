@@ -23,7 +23,7 @@ Follow these instructions to set up the .NET MAUI development environment and ru
 
 2. **Clone the Repository:**
    - Open a terminal or command prompt.
-   - Clone the project repository: `git clone https://github.com/yourusername/supermarket-refrigeration-maui.git`
+   - Clone the project repository: (https://github.com/shanemcguire12/Temperature.git)
    - Navigate to the cloned directory.
 
 3. **Open the Project:**
